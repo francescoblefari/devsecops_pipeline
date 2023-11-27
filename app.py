@@ -18,31 +18,6 @@ def home():
     return render_template('index.html')
 
 
-@app.route('/login', methods=['POST'])
-def login():
-    data = request.get_json()
-
-    if not data or 'username' not in data or 'password' not in data:
-        return jsonify({"message": "Invalid request data"}), 400
-
-    username = data['username']
-    password = data['password']
-
-    # Utilizzo di una query SQL grezza per verificare lo username e la password
-    sql = f"SELECT * FROM user WHERE username = '{username}' AND password = '{password}'"
-
-    conn = db.engine.connect()
-
-    # Esecuzione della query SQL vulnerabile concatenando l'input fornito dall'utente
-    res = conn.execute(text(sql))
-    names = [row[0] for row in res]
-    print(names)
-
-    if names:
-        return jsonify({"message": "Login successful"})
-
-    return jsonify({"message": "Login failed"}), 401
-
 
 @app.route('/secure_login', methods=['POST'])
 def secure_login():
